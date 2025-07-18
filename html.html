@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Password Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px auto;
+            padding: 20px;
+            max-width: 400px;
+            background: #f0f4f8;
+            border-radius: 8px;
+        }
+        .form-group {
+            margin-bottom: 12px;
+        }
+        label {
+            display: block;
+            margin-bottom: 4px;
+        }
+        input[type="number"] {
+            width: 60px;
+        }
+        button {
+            background: #3687d6;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 16px;
+            padding: 12px;
+            background: #e0efdb;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 1.2em;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <h2>Password Generator</h2>
+    <form id="passwordForm">
+        <div class="form-group">
+            <label for="letters">Letters:</label>
+            <input type="number" id="letters" name="letters" min="1" max="32" value="4" required>
+        </div>
+        <div class="form-group">
+            <label for="symbols">Symbols:</label>
+            <input type="number" id="symbols" name="symbols" min="0" max="16" value="2" required>
+        </div>
+        <div class="form-group">
+            <label for="numbers">Numbers:</label>
+            <input type="number" id="numbers" name="numbers" min="0" max="16" value="2" required>
+        </div>
+        <button type="submit">Generate Password</button>
+    </form>
+    <div class="result" id="result" style="display:none;"></div>
+    <script>
+        document.getElementById('passwordForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const letters = document.getElementById('letters').value;
+            const symbols = document.getElementById('symbols').value;
+            const numbers = document.getElementById('numbers').value;
+            fetch('/generate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({letters, symbols, numbers})
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = 'Generated password: ' + data.password;
+            })
+            .catch(err => {
+                alert('Error: ' + err);
+            });
+        });
+    </script>
+</body>
+</html>
